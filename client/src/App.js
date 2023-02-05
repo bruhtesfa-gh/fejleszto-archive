@@ -1,24 +1,13 @@
-import logo from './logo.svg';
-import './App.css';
-
+import React from 'react';
+import { BrowserRouter, Route, Navigate, useNavigate, Routes } from "react-router-dom";
+import ConnectFaceBook from './components/auth/connect-facebook';
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.d
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <React.Fragment>
+      <Routes>
+        <Route path="/connect" element={<ConnectFaceBook />} />
+      </Routes>
+    </React.Fragment>
   );
 }
 
