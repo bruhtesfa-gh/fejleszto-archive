@@ -1,4 +1,4 @@
-.container {
+ .container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -58,4 +58,5 @@
 .footer a {
   color: #4267b2;
   text-decoration: none;
-}
+} 
+

