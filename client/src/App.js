@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Navigate, useNavigate, Routes } from "react-router-dom";
+import { Route, Navigate, useNavigate, Routes } from "react-router-dom";
 import ConnectFaceBook from './components/auth/connect-facebook';
 function App() {
   return (
