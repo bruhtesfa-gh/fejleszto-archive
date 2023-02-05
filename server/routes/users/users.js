@@ -1,5 +1,5 @@
 const express = require('express');
-
+const User = require('../../models/User');
 const router = express.Router();
 
 router.get('/', (req, res) => {
@@ -7,7 +7,13 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-    res.json({ "message": req.body });
+    const { username, password } = req.body;
+    try {
+        const user = async () => await User.create({ username, password });
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(400).json(error);
+    }
 });
 
 module.exports = router; 
