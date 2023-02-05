@@ -6,10 +6,10 @@ router.get('/', (req, res) => {
     res.json({ 'message': 'all users' });
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
     const { username, password } = req.body;
     try {
-        const user = async () => await User.create({ username, password });
+        const user = await User.create({ username, password });
         res.status(200).json(user);
     } catch (error) {
         res.status(400).json(error);
