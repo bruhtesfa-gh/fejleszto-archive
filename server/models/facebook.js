@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const UserSchema = new Schema({
-    name: {
+const FaceBookSchema = new Schema({
+    accountname: {
         type: String,
         required: false,
     },
@@ -15,11 +15,17 @@ const UserSchema = new Schema({
         type: String,
         required: true,
     },
-    facebook: {
+    owner: {
         type: Schema.Types.ObjectId,
-        ref: 'FaceBook'
+        ref: 'User'
     },
+    stories: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Story'
+        }
+    ]
 }, { timestamps: true });
 
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model('FaceBook', FaceBookSchema);

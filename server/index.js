@@ -2,7 +2,8 @@ require('dotenv').config();
 const express = require("express");
 const app = express();
 const mongoose = require('mongoose');
-const userRouter = require('./routes/users/users');
+const usersroute = require('./routes/users/users');
+
 //access for body
 app.use(express.json());
 //middleware
@@ -11,7 +12,7 @@ app.use((req, res, next) => {
 });
 
 //router
-app.use('/users', userRouter);
+app.use('/users', usersroute);
 //mongoose.set('strictQuery', true);
 mongoose.connect(process.env.MONGO_URL).then(() => {
     app.listen(process.env.PORT, () => {

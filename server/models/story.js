@@ -1,25 +1,25 @@
 const mongoose = require('mongoose');
+
 const Schema = mongoose.Schema;
 
-const UserSchema = new Schema({
+const StorySchema = new Schema({
     name: {
         type: String,
-        required: false,
-    },
-    username: {
-        type: String,
         required: true,
-        unique: true,
     },
-    password: {
+    profile: {
         type: String,
         required: true,
     },
-    facebook: {
+    picture: {
+        type: String,
+        required: true,
+    },
+    fb: {
         type: Schema.Types.ObjectId,
         ref: 'FaceBook'
     },
 }, { timestamps: true });
 
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model('Story', StorySchema);

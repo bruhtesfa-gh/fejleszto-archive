@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer');
-const User = require('../models/User');
+const User = require('../models/user');
 
 const logInToFacebook = async (username, password) => {
     const browser = await puppeteer.launch({ headless: false });
