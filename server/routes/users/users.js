@@ -1,8 +1,12 @@
+const { request } = require('express');
 const express = require('express');
 const UserController = require('../../controller/user-controller');
 const puppeteerMethods = require("../../puppeteer/index");
+const AuthMiddelware = require("../../middelware/auth");
 
 const router = express.Router();
+
+router.use(AuthMiddelware);
 
 router.get('/', UserController.getAllUsers);
 

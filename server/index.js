@@ -3,6 +3,7 @@ const express = require("express");
 const app = express();
 const mongoose = require('mongoose');
 const usersroute = require('./routes/users/users');
+const authroute = require('./routes/auth/auth');
 
 //access for body
 app.use(express.json());
@@ -13,6 +14,8 @@ app.use((req, res, next) => {
 
 //router
 app.use('/users', usersroute);
+
+app.use('/auth', authroute);
 //mongoose.set('strictQuery', true);
 mongoose.connect(process.env.MONGO_URL).then(() => {
     app.listen(process.env.PORT, () => {
