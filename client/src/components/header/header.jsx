@@ -1,10 +1,25 @@
 import React, { useState } from "react";
-
+import { useSelector, useDispatch } from "react-redux";
+import { authActions } from "../../store/slices/auth";
+import { messageActions } from "../../store/slices/message";
 const Header = () => {
     const [shownav, setShowNav] = useState(false);
-    const [isAuth, setIsAuth] = useState(false);
+    const [showlogout, setShowLogOut] = useState(false);
+    const isAuth = useSelector(state => state.auth.loggedin);
+    const authUser = useSelector(state => state.auth.username);
+    const [isFbConnected, setFBConnected] = useState(false);
+    const dispatch = useDispatch();
     const toggleNav = () => {
         setShowNav(prev => !prev);
+    }
+
+    const dropDownHandler = () => {
+        setShowLogOut(prev => !prev);
+    }
+
+    const logOutHandler = () => {
+        dispatch(authActions.setLogOut());
+        dispatch(messageActions.setInfo({ 'message': 'Successfuly logged out' }));
     }
 
     return <React.Fragment>
@@ -38,23 +53,17 @@ const Header = () => {
                             </li>
                         </React.Fragment> : <React.Fragment>
                             <li className="nav-item dropdown">
-                                <a className="nav-link dropdown-toggle" href="#/" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Dropdown
+                                <a className="nav-link dropdown-toggle" href="#/" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded={showlogout} onClick={dropDownHandler}>
+                                    {authUser}
                                 </a>
-                                <div className="dropdown-menu " aria-labelledby="navbarDropdown">
-                                    <a className="dropdown-item" href="#/">Action</a>
-                                    <a className="dropdown-item" href="#/">Another action</a>
-                                    <div className="dropdown-divider"></div>
-                                    <a className="dropdown-item" href="#/">Something else here</a>
+                                <div className={showlogout ? "dropdown-menu show" : "dropdown-menu "} aria-labelledby="navbarDropdown">
+                                    {!isFbConnected && <a className="dropdown-item" href="/connect-fb">Connect with FB</a>}
+                                    <a className="dropdown-item" href="#/" onClick={logOutHandler}>Log Out</a>
                                 </div>
                             </li>
                         </React.Fragment>
-
                     }
-
-
                 </ul>
-
             </div>
         </nav>
     </React.Fragment>;

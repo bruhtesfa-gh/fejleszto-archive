@@ -1,14 +1,19 @@
 require('dotenv').config();
 const express = require("express");
 const app = express();
+const cros = require('cors')
 const mongoose = require('mongoose');
 const usersroute = require('./routes/users/users');
 const authroute = require('./routes/auth/auth');
 
+app.use(cros());
+
 //access for body
 app.use(express.json());
+
 //middleware
 app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
     next();
 });
 

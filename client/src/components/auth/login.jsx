@@ -1,8 +1,25 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { authActions } from '../../store/slices/auth';
+import { messageActions } from "../../store/slices/message";
+import axios from 'axios';
 const LogIn = () => {
+    const isAuthenticated = useSelector(state => state.auth.loggedin);
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const emailref = useRef();
     const passref = useRef();
     const rememberref = useRef();
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate('/');
+        }
+    }, [navigate, isAuthenticated]);
+
+
     const formValidationHandler = (e) => {
         e.preventDefault();
         let invalidform = false;
@@ -30,21 +47,26 @@ const LogIn = () => {
             }
 
             if (String(password).includes(' ')) {
-                message += "\password filled never contain empty space."
+                message += "\npassword filled never contain empty space."
                 invalidform = true;
             }
         }
 
         if (invalidform) {
-            console.log(message);
-            //dispatch(messageActions.setError({ message: message }));
+            dispatch(messageActions.setError({ message: message }));
         } else {
             logInHandler(email, password, rememberme)
         }
     }
 
-    const logInHandler = (email, password, rememberme) => {
-        console.log(email, password, rememberme)
+    const logInHandler = (email, password, remember_me) => {
+        axios.post('http://localhost:5000/auth/login', { email, password }).then(res => {
+            if (res.status === 200) {
+                dispatch(authActions.setLogIn({ username: email.split('@')[0], token: res.data.token }));
+            }
+        }).catch(error => {
+            dispatch(messageActions.setError({ message: error + "\n" }));
+        })
     }
 
     return (
