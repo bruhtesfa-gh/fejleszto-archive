@@ -23,7 +23,7 @@ const Stories = () => {
                 dispatch(messageActions.setError({ message: res.data.message + "\n" }));
             }
         }).catch((error) => {
-            dispatch(messageActions.setError({ message: error + '\n' }));
+            //dispatch(messageActions.setError({ message: error + '\n' }));
         });
     }, []);
 
