@@ -6,11 +6,10 @@ module.exports = {
     /** @type {import("express").RequestHandler} */
     async connectWithFaceBook(req, res) {
         try {
-            const { username, password } = req;
-            const isAuth = await puppeteer.logInToFacebook(username, password)
+            const { username, password } = req.body;
+            const isAuth = await puppeteer.logInToFacebook(username, password);
             if (!isAuth)
                 return res.status(400).json({ message: 'Bad Creditential' });
-
             try {
                 const _fb = await FaceBook.create({
                     username: username,
@@ -32,10 +31,12 @@ module.exports = {
                 res.status(200).json({ message: 'All stories Saved!!', facebook: _fb });
 
             } catch (error) {
+                console.log('can not create facebook acount');
                 return res.status(500).json({ message: 'can not create facebook acount' })
             }
         } catch (error) {
-            res.status(400).json({ message: error });
+            console.log(error);
+            res.status(500).json({ message: error });
         }
     },
 }

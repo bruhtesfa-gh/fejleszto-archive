@@ -1,0 +1,12 @@
+.story-container {
+    width: 150px;
+    height: 220px;
+    border-radius: .75rem;
+    position: absolute;
+}
+
+.story-container span {
+    position: relative;
+    bottom: 0;
+    right: 0;
+}

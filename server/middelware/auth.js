@@ -11,10 +11,15 @@ const AuthMiddelware = async (req, res, next) => {
     const token = authorization.split(' ')[1];
     try {
         const { _id } = jwt.verify(token, process.env.SECRET);
-        req._id = await User.findOne({ _id }).select('_id');
+        const user = await User.findOne({ _id }).select('_id');
+        if (user) {
+            req._id = _id;
+        } else {
+            return res.status(401).json({ 'message': 'Invalid Token' });
+        }
         next();
     } catch (error) {
-        return res.status(401).json({ error });
+        return res.status(401).json(error);
     }
 };
 

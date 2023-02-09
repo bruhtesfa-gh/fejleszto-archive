@@ -4,6 +4,7 @@ const User = require('../models/user');
 const logInToFacebook = async (username, password) => {
     const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
+    await page.setViewport({ width: 1366, height: 768 });
     await page.goto("https://www.facebook.com/login");
     await page.waitForSelector(".clearfix ._1kbt");
     await page.type('.clearfix ._1kbt', username);
@@ -11,13 +12,16 @@ const logInToFacebook = async (username, password) => {
     await page.type('.clearfix ._9npi', password);
     await page.waitForSelector("._xkt button");
     await page.click("._xkt button");
-    heading = await page.$eval('a', heading => heading.getAttribute('aria-label'));
+    await page.waitForNavigation({ waitUntil: 'networkidle2' });
+    heading = await page.$$eval('a', hs => hs[0].getAttribute('aria-label'));
+    await browser.close();
     return heading === 'Facebook'
 }
 
 const srapFBStories = async (username, password) => {
     const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
+    await page.setViewport({ width: 1366, height: 768 });
     await page.goto("https://www.facebook.com/login");
     await page.waitForSelector(".clearfix ._1kbt");
     await page.type('.clearfix ._1kbt', username);
@@ -25,8 +29,8 @@ const srapFBStories = async (username, password) => {
     await page.type('.clearfix ._9npi', password);
     await page.waitForSelector("._xkt button");
     await page.click("._xkt button");
-    heading = await page.$eval('a', heading => heading.getAttribute('aria-label'));
-
+    await page.waitForNavigation({ waitUntil: 'networkidle2' });
+    heading = await page.$$eval('a', hs => hs[0].getAttribute('aria-label'));
     if (heading == 'Facebook') {
         const data = await page.$$eval('.x98rzlu', stories => {
             return stories.filter((story, index) => {
@@ -48,9 +52,10 @@ const srapFBStories = async (username, password) => {
                 }
             });
         });
-
+        await browser.close();
         return { status: 200, data: data };
     } else {
+        await browser.close();
         return { status: 400, message: 'Bad Creditential' };
     }
 }

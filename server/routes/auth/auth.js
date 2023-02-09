@@ -1,10 +1,11 @@
+const { json } = require('express');
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const User = require('../../models/user');
 
 const router = express.Router();
 
-const accessToken = (id) => jwt.sign({ id }, process.env.SECRET, { expiresIn: '10d' })
+const accessToken = (_id) => jwt.sign({ _id }, process.env.SECRET, { expiresIn: '10d' })
 
 router.post('/login', async (req, res, next) => {
     const { email, password } = req.body;
