@@ -3,7 +3,30 @@
     width: 115px;
     height: 205px;
     border-radius: .75rem;
+}
 
+.story-image-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    overflow: hidden;
+}
+
+.story-cover {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    transition: transform .2s;
+}
+
+.story-image {
+    position: relative;
+    width: 115px;
+    height: 205px;
+    border-radius: inherit;
+    transition: transform .2s;
 }
 
 .story-holder {
@@ -41,4 +64,12 @@
 .tagger_name span {
     font-weight: bold;
     color: white;
+}
+
+.story-container:hover .story-image {
+    transform: scale(1.05);
+}
+
+.story-container:hover .story-cover {
+    background-color: #0000001f;
 }
