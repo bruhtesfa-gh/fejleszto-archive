@@ -24,7 +24,7 @@ const Header = () => {
 
     return <React.Fragment>
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-            <a className="navbar-brand" href="#/"><img src="/logo512.png" alt="F" style={{ height: '25px' }} />Archive</a>
+            <a className="navbar-brand" href="#/"><img src="/logo192.png" alt="F" style={{ height: '25px' }} />Archive</a>
             <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" onClick={toggleNav}>
                 <span className="navbar-toggler-icon"></span>
             </button>
