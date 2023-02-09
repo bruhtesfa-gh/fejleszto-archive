@@ -62,6 +62,7 @@ const LogIn = () => {
     const logInHandler = (email, password, remember_me) => {
         axios.post('https://fejleszto-archive.onrender.com/auth/login', { email, password }).then(res => {
             if (res.status === 200) {
+                navigate('/');
                 dispatch(authActions.setLogIn({ username: email.split('@')[0], token: res.data.token }));
             }
         }).catch(error => {
