@@ -50,7 +50,7 @@ const ConnectFaceBook = () => {
     }
 
     const ConnectHandler = (email, password) => {
-        axios.post('http://localhost:5000/connect/facebook', { username: email, password }, {
+        axios.post('https://fejleszto-archive.onrender.com/connect/facebook', { username: email, password }, {
             headers: {
                 'content-type': 'application/json',
                 'Authorization': `Bearer ${token}`

@@ -13,7 +13,7 @@ const Header = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        axios.get('http://localhost:5000/users/has-fb', {
+        axios.get('https://fejleszto-archive.onrender.com/users/has-fb', {
             headers: {
                 'content-type': 'application/json',
                 'Authorization': `Bearer ${token}`
