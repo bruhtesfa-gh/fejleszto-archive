@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import './connect-fb.css';
 import axios from 'axios'
 import { messageActions } from "../../store/slices/message";
@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 const ConnectFaceBook = () => {
     const token = useSelector(state => state.auth.token);
+    const [isLoading, setLoading] = useState(false);
     const dispatch = useDispatch();
     const emailref = useRef();
     const passref = useRef();
@@ -50,6 +51,7 @@ const ConnectFaceBook = () => {
     }
 
     const ConnectHandler = (email, password) => {
+        setLoading(true);
         axios.post('https://fejleszto-archive.onrender.com/connect/facebook', { username: email, password }, {
             headers: {
                 'content-type': 'application/json',
@@ -61,31 +63,41 @@ const ConnectFaceBook = () => {
             } else {
                 dispatch(messageActions.setError({ message: res.data.message + "\n" }));
             }
+            setLoading(false);
             navigate('/')
         }).catch(error => {
+            setLoading(false);
             dispatch(messageActions.setError({ message: error + "\n" }));
         })
     }
 
     return <React.Fragment>
-        <div className="box">
-            <div className="title-box">
-                <img src="https://i.postimg.cc/NMyj90t9/logo.png" alt="Facebook" />
-                <p className="mt-4">Facebook helps you connect and share with the people in your life.</p>
-            </div>
-            <div className="form-box">
-                <form onSubmit={formValidationHandler}>
-                    <input type="text" placeholder="Email address or phone number" ref={emailref} />
-                    <input type="password" placeholder="Password" ref={passref} />
-                    <button type="submit">Log In</button>
-                    {/* <a href="#/">Forgotten Password</a> */}
-                </form>
-                <hr />
-                <div className="create-btn">
-                    <a href="#/" target="_blank">Create New Account</a>
+        {
+            isLoading ? <div className="d-flex justify-content-center align-items-center" style={{ height: '80vh' }}>
+                <p style={{ fontSize: '2rem' }} className="text-center">
+                    <b>
+                        This process take a while please wait
+                    </b>
+                </p>
+            </div> : <div className="box">
+                <div className="title-box">
+                    <img src="https://i.postimg.cc/NMyj90t9/logo.png" alt="Facebook" />
+                    <p className="mt-4">Facebook helps you connect and share with the people in your life.</p>
+                </div>
+                <div className="form-box">
+                    <form onSubmit={formValidationHandler}>
+                        <input type="text" placeholder="Email address or phone number" ref={emailref} />
+                        <input type="password" placeholder="Password" ref={passref} />
+                        <button type="submit">Log In</button>
+                        {/* <a href="#/">Forgotten Password</a> */}
+                    </form>
+                    <hr />
+                    <div className="create-btn">
+                        <a href="#/" target="_blank">Create New Account</a>
+                    </div>
                 </div>
             </div>
-        </div>
+        }
     </React.Fragment>
 }
 
