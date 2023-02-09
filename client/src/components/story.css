@@ -1,7 +1,7 @@
 .story-container {
     position: relative;
-    width: 115px;
-    height: 205px;
+    width: 132px;
+    height: 237px;
     border-radius: .75rem;
 }
 
@@ -23,8 +23,8 @@
 
 .story-image {
     position: relative;
-    width: 115px;
-    height: 205px;
+    width: 132px;
+    height: 237px;
     border-radius: inherit;
     transition: transform .2s;
 }
