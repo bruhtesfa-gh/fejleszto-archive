@@ -9,6 +9,7 @@ const router = express.Router();
 router.use(AuthMiddelware);
 
 router.get('/', UserController.getAllUsers);
+router.get('/has-fb', UserController.userHasConnectedWithFB);
 
 // router.post('/', async (req, res) => {
 //     const { username, password } = req.body;

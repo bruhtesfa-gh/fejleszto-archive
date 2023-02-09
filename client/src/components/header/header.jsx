@@ -1,14 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { authActions } from "../../store/slices/auth";
 import { messageActions } from "../../store/slices/message";
+import axios from 'axios';
 const Header = () => {
     const [shownav, setShowNav] = useState(false);
     const [showlogout, setShowLogOut] = useState(false);
     const isAuth = useSelector(state => state.auth.loggedin);
     const authUser = useSelector(state => state.auth.username);
     const [isFbConnected, setFBConnected] = useState(false);
+    const token = useSelector(state => state.auth.token);
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        axios.get('http://localhost:5000/users/has-fb', {
+            headers: {
+                'content-type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+        }).then((res) => {
+            if (res.status === 200) {
+                setFBConnected(res.data.isConnected);
+            }
+        }).catch((error) => {
+            dispatch(messageActions.setError({ message: error + '\n' }));
+        });
+    }, []);
+
     const toggleNav = () => {
         setShowNav(prev => !prev);
     }

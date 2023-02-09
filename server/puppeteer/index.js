@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 const User = require('../models/user');
 
 const logInToFacebook = async (username, password) => {
-    const browser = await puppeteer.launch({ headless: false });
+    const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.setViewport({ width: 1366, height: 768 });
     await page.goto("https://www.facebook.com/login");
@@ -19,7 +19,7 @@ const logInToFacebook = async (username, password) => {
 }
 
 const srapFBStories = async (username, password) => {
-    const browser = await puppeteer.launch({ headless: false });
+    const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.setViewport({ width: 1366, height: 768 });
     await page.goto("https://www.facebook.com/login");

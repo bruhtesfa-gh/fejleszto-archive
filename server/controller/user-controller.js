@@ -1,4 +1,5 @@
 
+const FaceBook = require('../models/facebook');
 const User = require('../models/user');
 
 module.exports = {
@@ -11,8 +12,19 @@ module.exports = {
             res.status(400).json(error);
         }
     },
-    async getUser(req, res) {
+    /** @type {import("express").RequestHandler} */
+    async userHasConnectedWithFB(req, res) {
+        try {
+            const fb = await FaceBook.findOne({ owner: req._id });
 
+            if (fb) {
+                res.status(200).json({ isConnected: true });
+            } else {
+                res.status(200).json({ isConnected: false });
+            }
+        } catch (error) {
+            res.status(500).json({ message: error });
+        }
     }
 }
 

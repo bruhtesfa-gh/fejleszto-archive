@@ -20,9 +20,7 @@ const Story = (props) => {
                 </div>
             </div>
 
-            <div className="story-cover">
-
-            </div>
+            <div className="story-cover" />
         </div>
     </React.Fragment>
 }
