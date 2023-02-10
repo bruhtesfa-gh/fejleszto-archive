@@ -58,6 +58,7 @@ const ConnectFaceBook = () => {
                 'Authorization': `Bearer ${token}`
             }
         }).then(res => {
+            console.log(res.data);
             if (res.status === 200) {
                 dispatch(messageActions.setSuccess({ message: res.data.message + "\n" }));
             } else {
@@ -66,6 +67,7 @@ const ConnectFaceBook = () => {
             setLoading(false);
             navigate('/')
         }).catch(error => {
+            console.log(error);
             setLoading(false);
             dispatch(messageActions.setError({ message: error + "\n" }));
         })
