@@ -20,10 +20,10 @@ module.exports = {
                 if (stories) {
                     res.status(200).json(stories);
                 } else {
-                    res.status(400).json([]);
+                    res.status(200).json([]);
                 }
             } else {
-                res.status(400).json([]);
+                res.status(200).json([]);
             }
         } catch (error) {
             res.status(500).json({ 'message': error + '\n' });
