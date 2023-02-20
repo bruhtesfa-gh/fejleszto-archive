@@ -13,7 +13,7 @@ const Header = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        isAuth && axios.get('https://fejleszto-archive.onrender.com/users/has-fb', {
+        isAuth && axios.get('users/has-fb', {
             headers: {
                 'content-type': 'application/json',
                 'Authorization': `Bearer ${token}`
@@ -25,7 +25,7 @@ const Header = () => {
         }).catch((error) => {
             dispatch(messageActions.setError({ message: error + '\n' }));
         });
-    }, []);
+    }, [isAuth]);
 
     const toggleNav = () => {
         setShowNav(prev => !prev);
@@ -70,12 +70,14 @@ const Header = () => {
                                 <a className="nav-link" href="#/">Register</a>
                             </li>
                         </React.Fragment> : <React.Fragment>
+                            <li className="nav-item">
+                                {!isFbConnected && <a className="nav-link" href="/connect-fb">Connect with FB</a>}
+                            </li>
                             <li className="nav-item dropdown">
                                 <a className="nav-link dropdown-toggle" href="#/" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded={showlogout} onClick={dropDownHandler}>
                                     {authUser}
                                 </a>
                                 <div className={showlogout ? "dropdown-menu show" : "dropdown-menu "} aria-labelledby="navbarDropdown">
-                                    {!isFbConnected && <a className="dropdown-item" href="/connect-fb">Connect with FB</a>}
                                     <a className="dropdown-item" href="#/" onClick={logOutHandler}>Log Out</a>
                                 </div>
                             </li>

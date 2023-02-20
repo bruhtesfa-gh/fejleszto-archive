@@ -11,6 +11,7 @@ const authSlice = createSlice({
         setLogIn(state, action) {
             state.token = action.payload.token;
             state.loggedin = true;
+            state.username = action.payload.username;
             localStorage.setItem("authtoken", action.payload.token);
             localStorage.setItem("username", action.payload.username);
         },

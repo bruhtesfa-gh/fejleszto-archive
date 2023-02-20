@@ -8,11 +8,15 @@ const FaceBookSchema = new Schema({
     },
     username: {
         type: String,
-        required: true,
+        required: false,
         unique: true,
     },
     password: {
         type: String,
+        required: false,
+    },
+    cookies: {
+        type: Object,
         required: true,
     },
     owner: {

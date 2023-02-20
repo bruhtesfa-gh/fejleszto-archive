@@ -7,5 +7,5 @@ const router = express.Router();
 router.use(AuthMiddelware);
 
 router.get('/stories', FaceBookController.getAllStories);
-
+router.post('/scrap-stories', FaceBookController.ScrapFaceBookStories);
 module.exports = router; 

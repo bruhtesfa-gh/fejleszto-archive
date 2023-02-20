@@ -10,7 +10,7 @@ const Stories = () => {
     const token = useSelector(state => state.auth.token);
     const dispatch = useDispatch();
     useEffect(() => {
-        axios.get('https://fejleszto-archive.onrender.com/facebook/stories', {
+        axios.get('facebook/stories', {
             headers: {
                 'content-type': 'application/json',
                 'Authorization': `Bearer ${token}`
