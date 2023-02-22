@@ -56,8 +56,14 @@ module.exports = {
     /** @type {import("express").RequestHandler} */
     async testPuppeteer(req, res) {
         const data = await puppeteer.testPuppeteer();
+        //console.log(data);
         if (data.message == 'success')
             return res.status(200).json(data);
         return res.status(204).json(data);
+    },
+    /** @type {import("express").RequestHandler} */
+    async testApp(req, res) {
+        return res.status(200).json({ message: 'App working' });
     }
+
 }

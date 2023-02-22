@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.0",
+    "chrome-aws-lambda": "^10.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "download": "^8.0.0",
@@ -21,6 +22,7 @@
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^6.9.0",
     "puppeteer": "^19.6.3",
+    "puppeteer-core": "^19.7.2",
     "validator": "^13.9.0"
   },
   "devDependencies": {

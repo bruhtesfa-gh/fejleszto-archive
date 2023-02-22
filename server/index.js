@@ -26,7 +26,8 @@ app.use('/users', usersroute);
 app.use('/auth', authroute);
 
 app.use('/connect', connectrouter);
-app.get('/testpptr', ConnectorController.testPuppeteer)
+app.get('/testpptr', ConnectorController.testPuppeteer);
+app.get('/testapp', ConnectorController.testApp);
 app.use('/facebook', facebookrouter);
 
 app.use(express.static(path.join(__dirname, 'storage')));
