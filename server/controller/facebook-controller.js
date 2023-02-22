@@ -33,27 +33,42 @@ module.exports = {
     },
     /** @type {import("express").RequestHandler} */
     async ScrapFaceBookStories(req, res) {
-
         try {
+            let total_stories = 0;
             const _fb = await FaceBook.findOne({ owner: req._id });
             if (_fb) {
-                puppeteer.srapFBStories(_fb.cookies).then((response) => {
-                    return res.status(response.status).json(response.response);
-                    // stories.data.forEach(async function (story) {
-                    //     const s = await Story.create({
-                    //         name: story.name,
-                    //         profile: story.profile,
-                    //         picture: story.picture,
-                    //         fb: _fb._id
-                    //     });
-                    // });
+                puppeteer.srapFBStoriesUrl(_fb.cookies).then(async (data) => {
+                    console.log(data.status)
+                    if (data.status === 200) {
+                        for await (story of data.response.stories) {
+                            const { name, profile, url } = story;
+
+                            const files = await puppeteer.scrapFaceBookStoriesData(url);
+                            console.log(files);
+                            if (files.length > 0) {
+                                const s = await Story.create({ name, profile, files, fb: _fb._id });
+                                total_stories++;
+                            }
+                        }
+                        // await data.response.stories.forEach(async (story) => {
+
+                        // });
+                        console.log(total_stories)
+                        if (total_stories > 0) {
+                            return res.status(200).json({ message: 'Stories Saved!' });
+                        }
+                        return res.status(204).json({ message: 'could not save Stories' });
+                    } else {
+                        return res.status(204).json({ message: 'could not save Stories' });
+                    }
                 }).catch(error => {
                     console.log(error);
-                    return res.status(500).json({ message: 'All stories not Saved!!', facebook: _fb });
+                    return res.status(204).json({ message: 'All stories not Saved!!', facebook: _fb });
                 });
             }
         } catch (error) {
-
+            console.log(error);
+            return res.status(204).json({ message: 'could not save Stories some Error occure' });
         }
     }
 }

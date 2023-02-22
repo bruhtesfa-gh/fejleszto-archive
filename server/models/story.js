@@ -11,8 +11,8 @@ const StorySchema = new Schema({
         type: String,
         required: true,
     },
-    picture: {
-        type: String,
+    files: {
+        type: Schema.Types.Array,
         required: true,
     },
     fb: {

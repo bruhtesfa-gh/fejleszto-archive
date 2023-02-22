@@ -43,17 +43,25 @@ const logInToFacebook = async (username, password) => {
     }
 
 }
-
-const srapFBStories = async (cookies) => {
+/**
+ * login to a customer fb account and grap all stories metadata
+ * @param {string} cookies 
+ * @returns 
+ */
+const srapFBStoriesUrl = async (cookies) => {
     const browser = await puppeteer.launch({ headless: false, defaultViewport: null, args: ['--start-maximized'] });
     const page = await browser.newPage();
+    await page.setRequestInterception(true);
 
+    page.on('request', (req) => {
+        if (req.resourceType() === 'stylesheet' || req.resourceType() === 'font' || req.resourceType() === 'image') {
+            req.abort();
+        }
+        else {
+            req.continue();
+        }
+    });
     try {
-        const delay = (time) => {
-            return new Promise(function (resolve) {
-                setTimeout(resolve, time)
-            });
-        };
         const cookie = JSON.parse(cookies);
         await page.setCookie(...cookie);
         await page.goto("https://www.facebook.com").catch(error => {
@@ -65,88 +73,38 @@ const srapFBStories = async (cookies) => {
             };
         });
         //                              div.x9f619.x1n2onr6.x1ja2u2z.x1wsgfga.x9otpla.xwib8y2.x1y1aw1k > div > div > div
-        const data = await page.$$eval('div.x9f619.x1n2onr6.x1ja2u2z.x1wsgfga.x9otpla.xwib8y2.x1y1aw1k > div > div > div', (stories) => {
-            return stories.filter((story, index) => {
+        const stories = await page.$$eval('div.x193iq5w.xgmub6v.x1ceravr > div > div > div.x9f619.x193iq5w > div > div a', (_stories, index) => {
+            return _stories.filter((story, index) => {
                 return index !== 0;
-            }).map((story, index) => {
-                let a = story.querySelector('.x1n2onr6>a');
+            }).map((a) => {
+                //let a = story.querySelector('.x1n2onr6>a');
                 if (a) {
                     return {
                         'name': a.getAttribute('aria-label').substring(0, a.getAttribute('aria-label').length - 8),
-                        'picture': a.querySelector('div > div > div.x1g0ag68.xx6bhzk.x11xpdln.xcj1dhv.x1ey2m1c.x9f619.xds687c.x10l6tqk.x17qophe.x13vifvy > img').getAttribute('src'),
                         'profile': a.querySelector('div > div > div.x10l6tqk.x17qophe.x13vifvy.x47corl > div > img').getAttribute('src'),
                         'url': 'https://www.facebook.com' + a.getAttribute('href')
                     }
                 } else {
                     return {
                         'name': '',
-                        'picture': '',
                         'profile': '',
                         'url': ''
                     }
                 }
             });
         });
-        //console.log(data);
-        //await browser.close();
-        console.log('trying to open new tab');
-        const responseData = await Promise.all(data.map(async (story) => {
-            const downloadpage = await browser.newPage();
-            await downloadpage.goto("https://www.fbvideodown.com/").catch(error => {
-                console.log(error)
-                return {
-                    ...story, files: ['bado']
-                };
-            });
-            await downloadpage.type('#function-area > div > div.input-wrapper > input', 'https://www.facebook.com/stories/107031310648971/UzpfSVNDOjUzOTIzOTkzODE4ODU0MQ==/?bucket_count=9&source=story_tray')
-            await downloadpage.click('#function-area > div > div.btn.functionAreaBtn');
-            delay(500);
-            const data_container = await downloadpage.waitForSelector('#dl-area > div');
-            if (!data_container)
-                delay(500);
-            if (!data_container)
-                return {
-                    ...story, files: ['bado 2']
-                }
-            console.log('trying to access');
-            const storiesUrl = await downloadpage.$$eval('#dl-area > div > div', (result) => {
-                return result.map(r => {
-                    let url = '';
-                    if (r.firstElementChild.tagName === 'IMG') {
-                        url = r.querySelector('img').getAttribute('src');
-                    } else {
-                        url = r.querySelector('video > source').getAttribute('src');
-                    }
-                    return url;
-                });
-            });
-
-            const files = [];
-            async function downloadFile(urls) {
-                return await Promise.all(urls.map((url) => download(url, "storage/facebook").then(res => {
-                    files.push('storage/facebook/' + url.substring(url.lastIndexOf('/') + 1))
-                })))
-            };
-            await downloadFile(storiesUrl);
-            return {
-                ...story, files
-            }
-        }));
-
+        //console.log(stories);
         await browser.close();
         return {
             status: 200, response: {
-                data: responseData,
+                stories,
                 cause: 'success'
             }
         };
-
-
     } catch (error) {
-        console.log(error);
         return {
             status: 500, response: {
-                data: null,
+                stories: [],
                 cause: 'could not scrap'
             }
         };
@@ -154,11 +112,98 @@ const srapFBStories = async (cookies) => {
 
 }
 
+/**
+ * download video and Images of story using url from third party
+ * @param {string} url 
+ * @returns 
+ */
+const scrapFaceBookStoriesData = async (url) => {
+    const browser = await puppeteer.launch({ headless: false, defaultViewport: null, args: ['--start-maximized'] });
+    const downloadpage = await browser.newPage();
+    await downloadpage.setRequestInterception(true);
+    const blocked_domains = [
+        'googlesyndication.com',
+        'adservice.google.com',
+    ];
+    downloadpage.on('request', (req) => {
+        const url = req.url();
+        if (req.resourceType() === 'stylesheet' || req.resourceType() === 'font' || req.resourceType() === 'image' || blocked_domains.some(domain => url.includes(domain))) {
+            req.abort();
+        }
+        else {
+            req.continue();
+        }
+    });
+    try {
+        await downloadpage.goto("https://www.fbvideodown.com/").catch(error => {
+            return [];
+        });
+        await downloadpage.type('#function-area > div > div.input-wrapper > input', url)
+        await downloadpage.click('#function-area > div > div.btn.functionAreaBtn');
+        await new Promise(r => setTimeout(r, 2000));
+        let exists = await downloadpage.$eval('#dl-area > div > div', () => true).catch(() => false)
+        if (!exists) {
+            exists = await downloadpage.$eval('#dl-area > div > div', () => true).catch(() => false)
+            await new Promise(r => setTimeout(r, 1000));
+            if (!exists) {
+                console.log('no data');
+                await browser.close();
+                return []
+            }
+        }
+        console.log('try to find urls');
+        const storiesUrl = await downloadpage.$$eval('#dl-area > div > div', (result) => {
+            return result.map(r => {
+                let url = '';
+                if (r.firstElementChild.tagName === 'IMG') {
+                    url = r.querySelector('img').getAttribute('src');
+                } else {
+                    url = r.querySelector('video > source').getAttribute('src');
+                }
+                return url;
+            });
+        });
+        console.log(storiesUrl);
+        const files = [];
+        async function downloadFile(urls) {
+            return await Promise.all(urls.map((url) => download(url, "storage/facebook").then(res => {
+                files.push('storage/facebook/' + url.substring(url.lastIndexOf('/') + 1))
+            })))
+        };
+        await downloadFile(storiesUrl);
+        //console.log(files);
+        await browser.close()
+        return files
+    } catch (error) {
+        console.log(error);
+        return [];
+    }
+}
 
+const testPuppeteer = async () => {
+    const browser = await puppeteer.launch({ headless: true, defaultViewport: null, args: ['--start-maximized'] });
+    const page = await browser.newPage();
+    try {
+        await page.goto("https://www.wikipedia.org/");
+        const title = await page.title()
+        await browser.close();
+        return {
+            'message': 'success',
+            'title': title
+        }
+    } catch (error) {
+        return {
+            'message': 'error',
+            'title': ''
+        }
+    }
+}
 
 const puppeteerMethods = {
     logInToFacebook,
-    srapFBStories,
+    srapFBStoriesUrl,
+    scrapFaceBookStoriesData,
+    testPuppeteer
 };
 
 module.exports = puppeteerMethods;

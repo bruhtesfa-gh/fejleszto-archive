@@ -52,5 +52,12 @@ module.exports = {
         } catch (error) {
 
         }
+    },
+    /** @type {import("express").RequestHandler} */
+    async testPuppeteer(req, res) {
+        const data = await puppeteer.testPuppeteer();
+        if (data.message == 'success')
+            return res.status(200).json(data);
+        return res.status(204).json(data);
     }
 }

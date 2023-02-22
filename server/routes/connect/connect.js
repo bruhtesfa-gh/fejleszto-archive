@@ -1,5 +1,6 @@
 const { request } = require('express');
 const express = require('express');
+const connectorController = require('../../controller/connector-controller');
 const ConnectorController = require('../../controller/connector-controller');
 const AuthMiddelware = require("../../middelware/auth");
 
@@ -8,6 +9,7 @@ const router = express.Router();
 router.use(AuthMiddelware);
 
 router.post('/facebook', ConnectorController.connectWithFaceBook);
+router.get('/testpptr', connectorController.testPuppeteer)
 
 // router.post('/', async (req, res) => {
 //     const { username, password } = req.body;
