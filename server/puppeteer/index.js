@@ -181,7 +181,7 @@ const scrapFaceBookStoriesData = async (url) => {
 }
 
 const testPuppeteer = async () => {
-    const browser = await puppeteer.launch({ headless: true, defaultViewport: null, args: ['--start-maximized'] });
+    const browser = await puppeteer.launch({ headless: true, defaultViewport: null, args: ['--start-maximized', '--no-sandbox'] });
     const page = await browser.newPage();
     try {
         await page.goto("https://www.wikipedia.org/");
