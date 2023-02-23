@@ -182,11 +182,13 @@ const scrapFaceBookStoriesData = async (url) => {
 }
 
 const testPuppeteer = async () => {
+    // const path = await chromium.executablePath;
+    // console.log(path);
+    // chromium.puppeteer.launch
     const browser = await puppeteer.launch({
         headless: false,
         defaultViewport: null,
         args: ['--start-maximized', '--no-sandbox'],
-        executablePath: await chromium.executablePath
     });
     const page = await browser.newPage();
     try {
