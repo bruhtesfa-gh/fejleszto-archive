@@ -1,4 +1,3 @@
-const chromium = require('chrome-aws-lambda');
 const puppeteer = require('puppeteer');
 const User = require('../models/user');
 const https = require('https'); // or 'https' for https:// URLs
@@ -182,19 +181,17 @@ const scrapFaceBookStoriesData = async (url) => {
 }
 
 const testPuppeteer = async () => {
-    // const path = await chromium.executablePath;
-    // console.log(path);
-    // chromium.puppeteer.launch
     const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
         defaultViewport: null,
+        executablePath: await puppeteer.executablePath(),
         args: ['--start-maximized', '--no-sandbox'],
     });
     const page = await browser.newPage();
     try {
         await page.goto("https://www.wikipedia.org/");
         const title = await page.title()
-        //await browser.close();
+        await browser.close();
         return {
             'message': 'success',
             'title': title
