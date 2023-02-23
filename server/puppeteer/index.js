@@ -4,8 +4,12 @@ const https = require('https'); // or 'https' for https:// URLs
 const fs = require('fs');
 const download = require('download')
 const logInToFacebook = async (username, password) => {
-    const browser = await puppeteer.launch({ headless: false, defaultViewport: null, args: ['--start-maximized'] });
-    const page = await browser.newPage();
+    const browser = await puppeteer.launch({
+        headless: true,
+        defaultViewport: null,
+        executablePath: await puppeteer.executablePath(),
+        args: ['--start-maximized', '--no-sandbox'],
+    }); const page = await browser.newPage();
     try {
         await page.goto("https://www.facebook.com/login");
         await page.waitForSelector('body > div._10._9o-w.uiLayer._4-hy._3qw', { visible: true });
@@ -49,8 +53,12 @@ const logInToFacebook = async (username, password) => {
  * @returns 
  */
 const srapFBStoriesUrl = async (cookies) => {
-    const browser = await puppeteer.launch({ headless: false, defaultViewport: null, args: ['--start-maximized'] });
-    const page = await browser.newPage();
+    const browser = await puppeteer.launch({
+        headless: true,
+        defaultViewport: null,
+        executablePath: await puppeteer.executablePath(),
+        args: ['--start-maximized', '--no-sandbox'],
+    }); const page = await browser.newPage();
     await page.setRequestInterception(true);
 
     page.on('request', (req) => {
@@ -72,8 +80,14 @@ const srapFBStoriesUrl = async (cookies) => {
                 }
             };
         });
+        let selector = 'div.x193iq5w.xgmub6v.x1ceravr > div > div > div.x9f619.x193iq5w > div > div a';
+        let exists = await page.$eval(selector, () => true).catch(() => false)
+        if (!exists) {
+            console.log('found');
+            selector = 'div.x9f619.x1n2onr6.x1ja2u2z.x1wsgfga.x9otpla.xwib8y2.x1y1aw1k > div > div a';
+        }
         //                              div.x9f619.x1n2onr6.x1ja2u2z.x1wsgfga.x9otpla.xwib8y2.x1y1aw1k > div > div > div
-        const stories = await page.$$eval('div.x193iq5w.xgmub6v.x1ceravr > div > div > div.x9f619.x193iq5w > div > div a', (_stories, index) => {
+        const stories = await page.$$eval(selector, (_stories, index) => {
             return _stories.filter((story, index) => {
                 return index !== 0;
             }).map((a) => {
@@ -82,12 +96,14 @@ const srapFBStoriesUrl = async (cookies) => {
                     return {
                         'name': a.getAttribute('aria-label').substring(0, a.getAttribute('aria-label').length - 8),
                         'profile': a.querySelector('div > div > div.x10l6tqk.x17qophe.x13vifvy.x47corl > div > img').getAttribute('src'),
+                        'thumbnail': a.querySelector('div > div > div.x1g0ag68.xx6bhzk.x11xpdln.xcj1dhv.x1ey2m1c.x9f619.xds687c.x10l6tqk.x17qophe.x13vifvy > img').getAttribute('src'),
                         'url': 'https://www.facebook.com' + a.getAttribute('href')
                     }
                 } else {
                     return {
                         'name': '',
                         'profile': '',
+                        'thumbnail': '',
                         'url': ''
                     }
                 }
@@ -118,8 +134,12 @@ const srapFBStoriesUrl = async (cookies) => {
  * @returns 
  */
 const scrapFaceBookStoriesData = async (url) => {
-    const browser = await puppeteer.launch({ headless: false, defaultViewport: null, args: ['--start-maximized'] });
-    const downloadpage = await browser.newPage();
+    const browser = await puppeteer.launch({
+        headless: true,
+        defaultViewport: null,
+        executablePath: await puppeteer.executablePath(),
+        args: ['--start-maximized', '--no-sandbox'],
+    }); const downloadpage = await browser.newPage();
     await downloadpage.setRequestInterception(true);
     const blocked_domains = [
         'googlesyndication.com',
@@ -163,11 +183,10 @@ const scrapFaceBookStoriesData = async (url) => {
                 return url;
             });
         });
-        console.log(storiesUrl);
         const files = [];
         async function downloadFile(urls) {
-            return await Promise.all(urls.map((url) => download(url, "storage/facebook").then(res => {
-                files.push('storage/facebook/' + url.substring(url.lastIndexOf('/') + 1))
+            return await Promise.all(urls.map((url) => download(url, "storage/facebook/stories").then(res => {
+                files.push('facebook/stories' + url.substring(url.lastIndexOf('/') + 1))
             })))
         };
         await downloadFile(storiesUrl);

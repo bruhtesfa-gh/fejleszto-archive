@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const download = require('download');
 const FaceBook = require('../models/facebook');
 const logInToFacebook = require('../puppeteer/index').logInToFacebook;
 const Story = require('../models/story');
@@ -41,18 +42,26 @@ module.exports = {
                     console.log(data.status)
                     if (data.status === 200) {
                         for await (story of data.response.stories) {
-                            const { name, profile, url } = story;
+                            let { name, profile, thumbnail, url } = story;
 
                             const files = await puppeteer.scrapFaceBookStoriesData(url);
                             console.log(files);
                             if (files.length > 0) {
+                                download(thumbnail, "storage/facebook/thumbnail").then((result) => {
+                                    thumbnail = '/facebook/thumbnail' + thumbnail.substring(thumbnail.lastIndexOf('/') + 1)
+                                }).catch((err) => {
+
+                                });
+                                download(profile, "storage/facebook/thumbnail").then((result) => {
+                                    profile = '/facebook/thumbnail' + profile.substring(profile.lastIndexOf('/') + 1)
+                                }).catch((err) => {
+
+                                });
+
                                 const s = await Story.create({ name, profile, files, fb: _fb._id });
                                 total_stories++;
                             }
                         }
-                        // await data.response.stories.forEach(async (story) => {
-
-                        // });
                         console.log(total_stories)
                         if (total_stories > 0) {
                             return res.status(200).json({ message: 'Stories Saved!' });

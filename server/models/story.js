@@ -11,6 +11,10 @@ const StorySchema = new Schema({
         type: String,
         required: true,
     },
+    thumbnail: {
+        type: String,
+        required: true,
+    },
     files: {
         type: Schema.Types.Array,
         required: true,
