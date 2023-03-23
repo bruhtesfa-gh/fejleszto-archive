@@ -19,7 +19,7 @@ module.exports = {
                     owner: req._id
                 });
 
-                res.status(200).json({ message: 'Connected Successfuly', facebook: _fb });
+                return res.status(200).json({ message: 'Connected Successfuly', facebook: _fb });
 
             } catch (error) {
                 console.log('can not create facebook acount');

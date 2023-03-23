@@ -2,14 +2,15 @@ const puppeteer = require('puppeteer');
 const User = require('../models/user');
 const https = require('https'); // or 'https' for https:// URLs
 const fs = require('fs');
-const download = require('download')
+const download = require('download');
 const logInToFacebook = async (username, password) => {
     const browser = await puppeteer.launch({
         headless: true,
         defaultViewport: null,
         executablePath: await puppeteer.executablePath(),
         args: ['--start-maximized', '--no-sandbox'],
-    }); const page = await browser.newPage();
+    });
+    const page = await browser.newPage();
     try {
         await page.goto("https://www.facebook.com/login");
         await page.waitForSelector('body > div._10._9o-w.uiLayer._4-hy._3qw', { visible: true });
@@ -20,11 +21,12 @@ const logInToFacebook = async (username, password) => {
         await page.type('#pass', password);
         await page.click("#loginbutton");
         const navigation = await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
-        console.log(navigation.url());
+        //console.log(navigation.url());
         if (navigation.url() === 'https://www.facebook.com/' || navigation.url() === 'https://www.facebook.com') {
             const loggedIn = true;
             const _cookies = await page.cookies();
             const cookies = JSON.stringify(_cookies, null, 2);
+            await browser.close();
             return {
                 loggedIn,
                 cookies
@@ -32,14 +34,17 @@ const logInToFacebook = async (username, password) => {
         } else {
             const loggedIn = false;
             const cookies = null;
+            await browser.close();
             return {
                 loggedIn,
                 cookies
             }
         }
     } catch (error) {
+
         const loggedIn = false;
         const cookies = null;
+        await browser.close();
         return {
             loggedIn,
             cookies
@@ -57,7 +62,7 @@ const srapFBStoriesUrl = async (cookies) => {
         headless: true,
         defaultViewport: null,
         executablePath: await puppeteer.executablePath(),
-        args: ['--start-maximized', '--no-sandbox'],
+        args: ['--start-maximized'],
     }); const page = await browser.newPage();
     await page.setRequestInterception(true);
 
@@ -83,7 +88,7 @@ const srapFBStoriesUrl = async (cookies) => {
         let selector = 'div.x193iq5w.xgmub6v.x1ceravr > div > div > div.x9f619.x193iq5w > div > div a';
         let exists = await page.$eval(selector, () => true).catch(() => false)
         if (!exists) {
-            console.log('found');
+            console.log('not found');
             selector = 'div.x9f619.x1n2onr6.x1ja2u2z.x1wsgfga.x9otpla.xwib8y2.x1y1aw1k > div > div a';
         }
         //                              div.x9f619.x1n2onr6.x1ja2u2z.x1wsgfga.x9otpla.xwib8y2.x1y1aw1k > div > div > div
@@ -138,7 +143,7 @@ const scrapFaceBookStoriesData = async (url) => {
         headless: true,
         defaultViewport: null,
         executablePath: await puppeteer.executablePath(),
-        args: ['--start-maximized', '--no-sandbox'],
+        args: ['--start-maximized'],
     }); const downloadpage = await browser.newPage();
     await downloadpage.setRequestInterception(true);
     const blocked_domains = [
@@ -160,18 +165,18 @@ const scrapFaceBookStoriesData = async (url) => {
         });
         await downloadpage.type('#function-area > div > div.input-wrapper > input', url)
         await downloadpage.click('#function-area > div > div.btn.functionAreaBtn');
-        await new Promise(r => setTimeout(r, 2000));
+        await new Promise(r => setTimeout(r, 4000));
         let exists = await downloadpage.$eval('#dl-area > div > div', () => true).catch(() => false)
         if (!exists) {
             exists = await downloadpage.$eval('#dl-area > div > div', () => true).catch(() => false)
             await new Promise(r => setTimeout(r, 1000));
             if (!exists) {
-                console.log('no data');
+                //console.log('no data');
                 await browser.close();
                 return []
             }
         }
-        console.log('try to find urls');
+        //console.log('try to find urls');
         const storiesUrl = await downloadpage.$$eval('#dl-area > div > div', (result) => {
             return result.map(r => {
                 let url = '';
@@ -186,9 +191,10 @@ const scrapFaceBookStoriesData = async (url) => {
         const files = [];
         async function downloadFile(urls) {
             return await Promise.all(urls.map((url) => download(url, "storage/facebook/stories").then(res => {
-                files.push('facebook/stories' + url.substring(url.lastIndexOf('/') + 1))
+                files.push('facebook/stories/' + url.substring(url.lastIndexOf('/') + 1))
             })))
         };
+        //console.log(storiesUrl);
         await downloadFile(storiesUrl);
         //console.log(files);
         await browser.close()
@@ -200,11 +206,13 @@ const scrapFaceBookStoriesData = async (url) => {
 }
 
 const testPuppeteer = async () => {
+    await download('https://scontent-mad1-1.xx.fbcdn.net/v/t15.5256-10/332588664_6091222374249224_518675835376641430_n.jpg?stp=dst-jpg_p118x90&_nc_cat=1&ccb=1-7&_nc_sid=ad6a45&_nc_ohc=dZxjeZO_KZ8AX9jOGKG&_nc_ht=scontent-mad1-1.xx&oh=00_AfCzUw9aeEGZi3y5sQplDKZkwwdMZnYh4XHemsZycbr_ig&oe=63FCBB71', 'storage/facebook/stories');
+    return 'return';
     const browser = await puppeteer.launch({
         headless: true,
         defaultViewport: null,
         executablePath: await puppeteer.executablePath(),
-        args: ['--start-maximized', '--no-sandbox'],
+        args: ['--start-maximized'],
     });
     const page = await browser.newPage();
     try {

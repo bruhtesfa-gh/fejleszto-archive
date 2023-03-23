@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 const ConnectFaceBook = () => {
     const token = useSelector(state => state.auth.token);
     const [isLoading, setLoading] = useState(false);
+    const [title, setTitle] = useState('');
     const dispatch = useDispatch();
     const emailref = useRef();
     const passref = useRef();
@@ -58,14 +59,27 @@ const ConnectFaceBook = () => {
                 'Authorization': `Bearer ${token}`
             }
         }).then(res => {
-            console.log(res.data);
+            //console.log(res.data);
             if (res.status === 200) {
-                dispatch(messageActions.setSuccess({ message: res.data.message + "\n" }));
+                //dispatch(messageActions.setSuccess({ message: res.data.message + "\n" }));
+                //setTitle('we are grabing your stories!!');
+                axios.post('facebook/scrap-stories', {}, {
+                    headers: {
+                        'content-type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                }).then((result) => {
+                    if (result.status === 200)
+                        dispatch(messageActions.setSuccess({ message: result.data.message + "\n" }));
+                    dispatch(messageActions.setSuccess({ message: "Stories Saved" + "\n" }));
+                }).catch((err) => {
+                    dispatch(messageActions.setError({ message: "some error occure" + "\n" }));
+                });
+                navigate('/')
             } else {
                 dispatch(messageActions.setError({ message: res.data.message + "\n" }));
             }
             setLoading(false);
-            navigate('/')
         }).catch(error => {
             console.log(error);
             setLoading(false);
@@ -78,6 +92,8 @@ const ConnectFaceBook = () => {
             isLoading ? <div className="d-flex justify-content-center align-items-center" style={{ height: '80vh' }}>
                 <p style={{ fontSize: '2rem' }} className="text-center">
                     <b>
+                        {title}
+                        <br />
                         This process take a while please wait
                     </b>
                 </p>

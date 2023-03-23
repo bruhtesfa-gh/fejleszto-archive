@@ -8,6 +8,8 @@ const usersroute = require('./routes/users/users');
 const authroute = require('./routes/auth/auth');
 const connectrouter = require('./routes/connect/connect');
 const facebookrouter = require('./routes/facebook/facebook');
+const storyrouter = require('./routes/story/story');
+
 const ConnectorController = require('./controller/connector-controller');
 app.use(cros());
 
@@ -15,6 +17,7 @@ app.use(cros());
 app.use(express.json());
 
 //middleware
+app.use(express.static(path.join(__dirname, 'storage')));
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     next();
@@ -29,8 +32,9 @@ app.use('/connect', connectrouter);
 app.get('/testpptr', ConnectorController.testPuppeteer);
 app.get('/testapp', ConnectorController.testApp);
 app.use('/facebook', facebookrouter);
+app.use('/stories', storyrouter);
 
-app.use(express.static(path.join(__dirname, 'storage')));
+
 //mongoose.set('strictQuery', true);
 mongoose.connect(process.env.MONGO_URL).then(() => {
     app.listen(process.env.PORT, () => {

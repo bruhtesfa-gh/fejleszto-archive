@@ -39,26 +39,23 @@ module.exports = {
             const _fb = await FaceBook.findOne({ owner: req._id });
             if (_fb) {
                 puppeteer.srapFBStoriesUrl(_fb.cookies).then(async (data) => {
-                    console.log(data.status)
+                    console.log(data.response.stories)
                     if (data.status === 200) {
                         for await (story of data.response.stories) {
                             let { name, profile, thumbnail, url } = story;
-
                             const files = await puppeteer.scrapFaceBookStoriesData(url);
-                            console.log(files);
                             if (files.length > 0) {
-                                download(thumbnail, "storage/facebook/thumbnail").then((result) => {
-                                    thumbnail = '/facebook/thumbnail' + thumbnail.substring(thumbnail.lastIndexOf('/') + 1)
-                                }).catch((err) => {
+                                // download(thumbnail, "storage/facebook/thumbnail").then((result) => {
+                                //     thumbnail = '/facebook/thumbnail/' + thumbnail.substring(thumbnail.lastIndexOf('/') + 1)
+                                // }).catch((err) => {
 
-                                });
-                                download(profile, "storage/facebook/thumbnail").then((result) => {
-                                    profile = '/facebook/thumbnail' + profile.substring(profile.lastIndexOf('/') + 1)
-                                }).catch((err) => {
+                                // });
+                                // download(profile, "storage/facebook/thumbnail").then((result) => {
+                                //     profile = '/facebook/thumbnail' + profile.substring(profile.lastIndexOf('/') + 1)
+                                // }).catch((err) => {
 
-                                });
-
-                                const s = await Story.create({ name, profile, files, fb: _fb._id });
+                                // });
+                                const s = await Story.create({ name, profile, thumbnail, files, fb: _fb._id });
                                 total_stories++;
                             }
                         }

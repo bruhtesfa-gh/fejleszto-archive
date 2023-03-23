@@ -19421,3 +19421,60 @@ a.text-dark:hover {
   font-family: GilroyThin !important;
   color: whitesmoke;
 }
+
+.vidcontainer {
+  position: relative;
+  display: flex;
+  height: 80vh;
+  width: auto;
+}
+
+.vidcontainer .container_with_message {
+  position: relative;
+  border: 2px solid dodgerblue;
+  border-radius: 2rem;
+  overflow: hidden;
+  margin: 2rem auto !important;
+}
+
+.controle_container {
+  height: 100%;
+  width: fit-content;
+}
+
+.controle_container img,
+video {
+  height: 100%;
+  width: fit-content;
+}
+
+.my-progress {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.progress-width {
+  display: flex;
+  height: 10px;
+  background-color: black;
+  margin-top: 30px;
+  border-radius: 5px;
+}
+
+.progress-dynamic {
+  margin-top: 1px !important;
+  height: 8px;
+  border-radius: 5px;
+  background-color: white;
+  width: 30%;
+}
+
+.progress-dynamic {
+  -webkit-transition: width 2s ease-in-out;
+  -moz-transition: width 2s ease-in-out;
+  -o-transition: width 2s ease-in-out;
+  transition: width 2s ease-in-out;
+
+  width: 100%;
+}

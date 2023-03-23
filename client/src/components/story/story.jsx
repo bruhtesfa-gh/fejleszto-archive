@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import '../story.css';
+import { useNavigate } from "react-router-dom";
 const Story = (props) => {
     const [story, SetStory] = useState(props.story);
-
+    const navigate = useNavigate();
+    const navigateToStory = () => {
+        navigate('/story/' + story._id);
+    };
     return <React.Fragment>
-        <div className="mx-2 story-container" >
+        <div className="mx-2 story-container" onClick={navigateToStory}>
             <div className="story-image-container" >
-                <div className="story-image" style={{ backgroundImage: `url(${story.picture})` }}>
+                <div className="story-image" style={{ backgroundImage: `url(${story.thumbnail})` }}>
                 </div>
             </div>
             <div className="story-holder ">
