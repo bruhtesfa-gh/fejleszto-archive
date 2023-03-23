@@ -23,6 +23,13 @@ app.use((req, res, next) => {
     next();
 });
 
+
+app.get('/insta-auto-replay', async function (req, res) {
+    res.send({
+        'message': 'recived'
+    })
+})
+
 //router
 app.use('/users', usersroute);
 
