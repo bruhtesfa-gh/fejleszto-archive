@@ -31,7 +31,7 @@ app.get('/insta-auto-replay', async function (req, res) {
 })
 
 app.get('/webhooks', async function (req, res) {
-    console.log(req.query);
+    console.log(req);
     res.send(req.query['hub.challenge']);
 })
 
