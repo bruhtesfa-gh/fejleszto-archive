@@ -30,10 +30,9 @@ app.get('/insta-auto-replay', async function (req, res) {
     })
 })
 
-app.get('/webhooks', async function (req, res) {
-    console.log("abebe");
-    console.log(req);
-    res.send(req.query['hub.challenge']);
+app.post('/webhooks', async function (req, res) {
+    console.log(req.body);
+    res.send("fsdag");
 })
 
 
